@@ -19,6 +19,9 @@ public:
     void setCOMlist(QList<QSerialPortInfo>& list);
 
     void setExternalCommunicator(ExternalConnector* connector);
+    void setExternalConnection(const QString& adress);
+    void dropExternalConnection();
+    void setExternalPorts(const QList<QString>& list);
 
     int  getSpeed();
     int  getDeviceIndex();

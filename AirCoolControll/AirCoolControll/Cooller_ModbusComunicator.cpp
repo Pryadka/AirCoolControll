@@ -30,6 +30,7 @@ Cooller_ModbusComunicator::Cooller_ModbusComunicator(CoolerStateWidget *view, Mo
     connect(&m_connector, SIGNAL(connectionBroken()), config, SLOT(connectionBroken()));
     connect(&m_connector, SIGNAL(connectionErrorOccured(QString)), config, SLOT(connectionErrorOccured(QString)));
     connect(&m_externalManager, SIGNAL(stateChanged()), this, SLOT(externalStateChanged()));
+    connect(&m_externalManager, SIGNAL(listChanged()), this, SLOT(externalListChanged()));
 }
 
 
@@ -139,5 +140,17 @@ void Cooller_ModbusComunicator::sendConfiguration(void)
 
 void Cooller_ModbusComunicator::externalStateChanged(void)
 {
+    if (m_externalManager.isActiveConnection())
+    {
+        m_config->setExternalConnection( m_externalManager.getExternalIP());
+    }
+    else
+    {
+        m_config->dropExternalConnection();
+    }
+}
 
+void Cooller_ModbusComunicator::externalListChanged(void)
+{
+    m_config->setExternalPorts(m_externalManager.getExternalPortsList());
 }

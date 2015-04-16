@@ -16,7 +16,7 @@ public:
 
     QString& getErrorDescription(void) const;
     bool     isActiveConnection(void) const;
-    QString& getExternalIP(void) const;
+    QString  getExternalIP(void) const;
     const QList<QString>& getExternalPortsList(void) const;
 
 public slots:
@@ -27,6 +27,7 @@ public slots:
 
 signals:
     void stateChanged(void);
+    void listChanged(void);
 
 private:
     void runServer();

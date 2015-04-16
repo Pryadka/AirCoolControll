@@ -1,5 +1,6 @@
 #include "connectionparameters.h"
 #include "externalconnector.h"
+#include "Configurator.h"
 
 ConnectionParameters::ConnectionParameters(QWidget *parent)
     : QWidget(parent),
@@ -16,6 +17,11 @@ ConnectionParameters::ConnectionParameters(QWidget *parent)
     ui.disconnectButton->setEnabled(false);
     ui.controllTypeTab->setCurrentIndex(0);
     ui.externalStatusLabel->setText(tr("Disconnected"));
+
+    ui.ipEd0->setText(Configurator::getSettings("IP0").toString());
+    ui.ipEd1->setText(Configurator::getSettings("IP1").toString());
+    ui.ipEd2->setText(Configurator::getSettings("IP2").toString());
+    ui.ipEd3->setText(Configurator::getSettings("IP3").toString());
 
     connect(ui.comboBoxSpeed, SIGNAL(currentIndexChanged(int)), this, SLOT(speedValueChanged(int)));
     connect(ui.spinBoxID, SIGNAL(valueChanged(int)), this, SLOT(IDValueChanged(int)));
@@ -119,6 +125,10 @@ void ConnectionParameters::externalConnect()
         return;
     }*/
     m_connector->connectToRemote(ip);
+    Configurator::setSettings("IP0",ui.ipEd0 -> text());
+    Configurator::setSettings("IP1",ui.ipEd1->text());
+    Configurator::setSettings("IP2",ui.ipEd2->text());
+    Configurator::setSettings("IP3",ui.ipEd3->text());
 }
 
 void ConnectionParameters::externalDisconnect()
@@ -161,4 +171,19 @@ void ConnectionParameters::externalConnection(bool isConnected)
 void ConnectionParameters::externalConnection(QString err)
 {
     setExternalStatus(tr("Connection error : ") + err,true);
+}
+
+void ConnectionParameters::setExternalConnection(const QString& adress)
+{
+    
+}
+
+void ConnectionParameters::dropExternalConnection()
+{
+    
+}
+
+void ConnectionParameters::setExternalPorts(const QList<QString>& list)
+{
+    
 }

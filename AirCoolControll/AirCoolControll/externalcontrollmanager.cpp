@@ -143,7 +143,7 @@ void ExternalControllManager::portsProc(boost::property_tree::ptree* params)
     if (m_portsInfo != portsInfo)
     {
         m_portsInfo = portsInfo;
-        emit stateChanged();
+        emit listChanged();
     }
 }
 
@@ -152,10 +152,8 @@ bool ExternalControllManager::isActiveConnection(void) const
     return NULL != m_clientSocket;
 }
 
-QString& ExternalControllManager::getExternalIP(void) const
+QString ExternalControllManager::getExternalIP(void) const
 {
-    QMutexLocker locker(&m_mutex);
-
     if (!m_server_status || NULL == m_clientSocket)
         return QString();
 

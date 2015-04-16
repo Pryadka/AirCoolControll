@@ -84,3 +84,18 @@ void ModBusDialog::connectionErrorOccured(QString err)
 {
     ui.parameters->externalConnection(err);
 }
+
+void ModBusDialog::setExternalConnection(const QString& adress)
+{
+    ui.parameters->setExternalConnection(adress);
+}
+
+void ModBusDialog::dropExternalConnection()
+{
+    ui.parameters->dropExternalConnection();
+}
+
+void ModBusDialog::setExternalPorts(const QList<QString>& list)
+{
+    ui.parameters->setExternalPorts(list);
+}

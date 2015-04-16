@@ -24,6 +24,10 @@ public:
     void externalConnection(bool isConnected);
     void externalConnection(QString err);
 
+    void setExternalConnection(const QString& adress);
+    void dropExternalConnection();
+    void setExternalPorts(const QList<QString>& list);
+
     int getSpeed();
     int getDeviceIndex();
 

@@ -138,6 +138,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="aircoolcontroll.cpp" />
+    <ClCompile Include="Configurator.cpp" />
     <ClCompile Include="connectionlog.cpp" />
     <ClCompile Include="connectionparameters.cpp" />
     <ClCompile Include="coolerstatewidget.cpp" />
@@ -273,6 +274,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Configurator.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="RequestRouter.h" />
     <CustomBuild Include="externalcontrollmanager.h">

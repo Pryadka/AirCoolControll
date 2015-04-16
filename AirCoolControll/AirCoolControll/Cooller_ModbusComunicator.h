@@ -28,6 +28,7 @@ private slots:
     void communicationError(QSerialPort::SerialPortError);
     void sendConfiguration(void);
     void externalStateChanged(void);
+    void externalListChanged(void);
 
 private:
     CoolerStateWidget *     m_view;
