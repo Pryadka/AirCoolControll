@@ -25,7 +25,6 @@ private slots:
     void newSpeed(int);
     void newPort(int);
     void newDevice(int);
-    void communicationError(QSerialPort::SerialPortError);
     void sendConfiguration(void);
     void externalStateChanged(void);
     void externalListChanged(void);
@@ -38,7 +37,6 @@ private:
     bool                    m_available;
     int                     m_comunicationSpeedIndex;
     int                     m_currentDeviveID;
-    QSerialPort             m_port;
     ExternalConnector       m_connector;
     ExternalControllManager m_externalManager;
 };

@@ -12,7 +12,6 @@ Cooller_ModbusComunicator::Cooller_ModbusComunicator(CoolerStateWidget *view, Mo
     m_available(false),
     m_comunicationSpeedIndex(6), //9600
     m_currentDeviveID(-1),
-    m_port(this),
     m_connector(this),
     m_externalManager(this)
 {
@@ -24,7 +23,6 @@ Cooller_ModbusComunicator::Cooller_ModbusComunicator(CoolerStateWidget *view, Mo
     connect(m_config, SIGNAL(speedChanged(int)), this, SLOT(newSpeed(int)));
     connect(m_config, SIGNAL(portChanged(int)), this, SLOT(newPort(int)));
     connect(m_config, SIGNAL(deviceIDChanged(int)), this, SLOT(newDevice(int)));
-    connect(&m_port, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(communicationError(QSerialPort::SerialPortError)));
     connect(&m_connector, SIGNAL(connectionEstablished()), config, SLOT(connectionEstablished()));
     connect(&m_connector, SIGNAL(connectionEstablished()), this, SLOT(sendConfiguration()));
     connect(&m_connector, SIGNAL(connectionBroken()), config, SLOT(connectionBroken()));
@@ -106,9 +104,7 @@ void Cooller_ModbusComunicator::newPort(int n)
     if (-1 != n)
     {
         QSerialPortInfo a_info = m_info[n];
-        m_port.setPort(a_info);
-        m_port.open(QIODevice::ReadWrite);
-        m_port.setBaudRate(m_comunicationSpeedIndex);
+       
     }
 }
 
@@ -117,15 +113,6 @@ void Cooller_ModbusComunicator::newDevice(int n)
     m_currentDeviveID = n;
 }
 
-void Cooller_ModbusComunicator::communicationError(QSerialPort::SerialPortError err)
-{
-    switch (err)
-    {
-    case QSerialPort::DeviceNotFoundError :
-        m_config->setError(QString("Nothing Connected"));
-        break;
-    }
-}
 
 void Cooller_ModbusComunicator::sendConfiguration(void)
 {

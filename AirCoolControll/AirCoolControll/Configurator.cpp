@@ -11,11 +11,13 @@ Configurator::Configurator()
 
     QString settingsFile = QApplication::applicationDirPath();
     settingsFile += "/settings.ini";
-    s_settings = QSharedPointer <QSettings> (new QSettings(settingsFile, QSettings::NativeFormat));
+    s_settings = QSharedPointer <QSettings> (new QSettings(settingsFile, QSettings::IniFormat));
+   // QApplication::restoreGeometry(s_settings->value("Main/Geometry").toByteArray());
 }
 
 Configurator::~Configurator()
 {
+    //s_settings->setValue("Main/Geometry", saveGeometry());
     s_settings->sync();
 }
 
