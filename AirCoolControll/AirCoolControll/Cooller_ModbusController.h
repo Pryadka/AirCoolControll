@@ -1,5 +1,5 @@
-#ifndef __COOLLER_MODBUSCOMUNICATOR__
-#define __COOLLER_MODBUSCOMUNICATOR__
+#ifndef __Cooller_ModBusController__
+#define __Cooller_ModBusController__
 
 #include "coolerstatewidget.h"
 #include "modbusdialog.h"
@@ -9,12 +9,12 @@
 #include <qtimer.h>
 #include <memory>
 
-class Cooller_ModbusComunicator : public QObject
+class Cooller_ModBusController : public QObject
 {
     Q_OBJECT
 public:
-    Cooller_ModbusComunicator(CoolerStateWidget *view, ModBusDialog *config);
-    ~Cooller_ModbusComunicator();
+    Cooller_ModBusController(CoolerStateWidget *view, ModBusDialog *config);
+    ~Cooller_ModBusController();
 
 private:
     void checkConnectionState(void);
@@ -41,4 +41,4 @@ private:
     ExternalControllManager m_externalManager;
 };
 
-#endif // __COOLLER_MODBUSCOMUNICATOR__
+#endif // __Cooller_ModBusController__

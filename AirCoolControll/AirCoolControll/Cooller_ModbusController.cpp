@@ -1,11 +1,12 @@
-#include "Cooller_ModbusComunicator.h"
+#include "Cooller_ModbusController.h"
 #include <QtSerialPort\qserialportinfo.h>
 #include <qstring>
 #include <qobject>
 #include <algorithm>
+#include "modbusuart_impl.h"
 
 
-Cooller_ModbusComunicator::Cooller_ModbusComunicator(CoolerStateWidget *view, ModBusDialog *config) :
+Cooller_ModBusController::Cooller_ModBusController(CoolerStateWidget *view, ModBusDialog *config) :
     m_view(view), 
     m_config(config),
     m_recheckTimer(new QTimer(this)),
@@ -32,21 +33,21 @@ Cooller_ModbusComunicator::Cooller_ModbusComunicator(CoolerStateWidget *view, Mo
 }
 
 
-Cooller_ModbusComunicator::~Cooller_ModbusComunicator()
+Cooller_ModBusController::~Cooller_ModBusController()
 {
 }
 
-void Cooller_ModbusComunicator::updateState(void)
+void Cooller_ModBusController::updateState(void)
 {
     checkConnectionState();
 }
 
-bool Cooller_ModbusComunicator::equalPredicat(QSerialPortInfo& first, QSerialPortInfo& second)
+bool Cooller_ModBusController::equalPredicat(QSerialPortInfo& first, QSerialPortInfo& second)
 {
     return first.portName() == second.portName();
 }
 
-void Cooller_ModbusComunicator::checkConnectionState(void)
+void Cooller_ModBusController::checkConnectionState(void)
 {
     QList<QSerialPortInfo> a_info = QSerialPortInfo::availablePorts();
 
@@ -93,28 +94,32 @@ void Cooller_ModbusComunicator::checkConnectionState(void)
     }
 }
 
-void Cooller_ModbusComunicator::newSpeed(int n)
+void Cooller_ModBusController::newSpeed(int n)
 {
     m_comunicationSpeedIndex = n;
 }
 
-void Cooller_ModbusComunicator::newPort(int n)
+void Cooller_ModBusController::newPort(int n)
 {
     const static qint32 rates[] = {0};
     if (-1 != n)
     {
         QSerialPortInfo a_info = m_info[n];
-       
+        QString name = a_info.portName();
+        ModBusUART_Impl p(name, this);
+        p.setSpeed(9600);
+        QList<qint16> list;
+        p.readRegisterPool(1, 0, 6, list);
     }
 }
 
-void Cooller_ModbusComunicator::newDevice(int n)
+void Cooller_ModBusController::newDevice(int n)
 {
     m_currentDeviveID = n;
 }
 
 
-void Cooller_ModbusComunicator::sendConfiguration(void)
+void Cooller_ModBusController::sendConfiguration(void)
 {
     QList<QString> ports;
 
@@ -125,7 +130,7 @@ void Cooller_ModbusComunicator::sendConfiguration(void)
     m_connector.sendPortList(ports);
 }
 
-void Cooller_ModbusComunicator::externalStateChanged(void)
+void Cooller_ModBusController::externalStateChanged(void)
 {
     if (m_externalManager.isActiveConnection())
     {
@@ -137,7 +142,7 @@ void Cooller_ModbusComunicator::externalStateChanged(void)
     }
 }
 
-void Cooller_ModbusComunicator::externalListChanged(void)
+void Cooller_ModBusController::externalListChanged(void)
 {
     m_config->setExternalPorts(m_externalManager.getExternalPortsList());
 }

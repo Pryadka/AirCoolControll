@@ -3,18 +3,18 @@
 
 #include <QObject>
 #include <QtSerialPort\qserialport.h>
-#include "IModBus.h"
 
-class ModBusUART_Impl : public QObject, public IModBus
+class ModBusUART_Impl : public QObject
 {
     Q_OBJECT
 
 public:
-    ModBusUART_Impl(const QSerialPortInfo& info,QObject *parent);
+    ModBusUART_Impl(const QString& info,QObject *parent);
     ~ModBusUART_Impl();
 
+    void   setTimeOut(int t);
     void   setSpeed(int speed);
-    qint16 readRegister(quint16 id, quint16 regNumber);
+    bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QList<qint16>);
     void   writeRegister(quint16 id, quint16 regNumber, qint16 value);
     void   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
 
@@ -27,6 +27,7 @@ private:
 
 private:
     QSerialPort             m_port;
+    int                     m_timeOut;
 };
 
 #endif // MODBUSUART_IMPL_H

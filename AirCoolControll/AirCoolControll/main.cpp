@@ -1,6 +1,6 @@
 #include "aircoolcontroll.h"
 #include <QtWidgets/QApplication>
-#include "Cooller_ModbusComunicator.h"
+#include "Cooller_ModbusController.h"
 #include "Configurator.h"
 
 int main(int argc, char *argv[])
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     
     AirCoolControll w;
     
-    Cooller_ModbusComunicator comunicator(w.getStateWidget(),w.getConfigWidget());
+    Cooller_ModBusController comunicator(w.getStateWidget(),w.getConfigWidget());
     w.show();
     return a.exec();
 }

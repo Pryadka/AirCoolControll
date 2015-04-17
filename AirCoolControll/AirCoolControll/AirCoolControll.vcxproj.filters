@@ -86,15 +86,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_coolerstatewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="Cooller_ModbusComunicator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_Cooller_ModbusComunicator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_Cooller_ModbusComunicator.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="externalcontrollmanager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -131,9 +122,6 @@
     <ClCompile Include="Configurator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IModBus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="modbusuart_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -142,6 +130,15 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_modbusuart_impl.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_Cooller_ModbusController.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_Cooller_ModbusController.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Cooller_ModbusController.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -178,9 +175,6 @@
     <CustomBuild Include="coolerstatewidget.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="Cooller_ModbusComunicator.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="externalcontrollmanager.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
@@ -191,6 +185,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="modbusuart_impl.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Cooller_ModbusController.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -217,9 +214,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Configurator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="IModBus.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
