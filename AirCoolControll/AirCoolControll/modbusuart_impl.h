@@ -15,8 +15,8 @@ public:
     void   setTimeOut(int t);
     void   setSpeed(int speed);
     bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QList<qint16>);
-    void   writeRegister(quint16 id, quint16 regNumber, qint16 value);
-    void   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
+    bool   writeRegister(quint16 id, quint16 regNumber, quint16 value);
+    bool   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
 
 private slots:
     void communicationError(QSerialPort::SerialPortError);
@@ -24,6 +24,8 @@ private slots:
 private:
     static quint16 crc16(const char* buffer, int length);
     static QByteArray ModBusUART_Impl::makeRTUFrame(int slave, int function, const QByteArray & data);
+
+    bool checkCRC(const QByteArray& data) const;
 
 private:
     QSerialPort             m_port;

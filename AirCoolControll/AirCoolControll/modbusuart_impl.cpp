@@ -65,19 +65,15 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
         QByteArray responseData = m_port.readAll();
         while (m_port.waitForReadyRead(20))
             responseData += m_port.readAll();
-        
-        int responseLength = responseData.size();
-        if (responseLength != responseLengthMust || responseLength < 4 || responseData[1] != char(3))
+
+        if ( ! checkCRC(responseData))
             return false;
 
-        quint16 crc = crc16(responseData.data(), responseLength - 2);
-        const uchar* d = (const uchar *)responseData.data();
-        quint16 crcInResponse = qFromLittleEndian<quint16>(d + responseLength - 2);
-        if (crc != crcInResponse)
+        if (responseData.size() != responseLengthMust || responseData[1] != char(3) || responseData[0] != char(id))
             return false;
 
         o_list.clear();
-        d += 2;
+        const uchar* d = (const uchar *)responseData.data() + 2;
         for (int i = 0; i < regCount; i++)
         {
             quint16 v = qFromLittleEndian<quint16>(d + i * 2);
@@ -92,18 +88,104 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
     return true;
 }
 
-void ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, qint16 value)
+bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value)
 {
-    QByteArray data = QByteArray::fromRawData((const char*)& regNumber, sizeof(qint16));
+    quint16 regNumberBig = qToBigEndian<quint16>(regNumber);
+    quint16 valueBig = qToBigEndian<quint16>(value);
+    QByteArray data = QByteArray::fromRawData((const char*)& regNumberBig, sizeof(quint16));
+    data.append(QByteArray::fromRawData((const char*)&valueBig, sizeof(quint16)));
     data += QByteArray::fromRawData((const char*)& value, sizeof(qint16));
     QByteArray req = makeRTUFrame(id, 6, data);
 
     m_port.write(req);
+
+    if (!m_port.waitForBytesWritten(m_timeOut))
+    {
+        return false;
+    }
+
+    if (m_port.waitForReadyRead(m_timeOut))
+    {
+        QByteArray responseData = m_port.readAll();
+        while (m_port.waitForReadyRead(20))
+            responseData += m_port.readAll();
+
+        if ( ! checkCRC(responseData))
+            return false;
+
+        if (responseData.size() == 8 && responseData[1] != char(6) || responseData[0] != char(id))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
-void ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version)
+bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version)
 {
+    const char reqBody[] = { char(0x0E), char(1), char(0) };
+    QByteArray req = makeRTUFrame(id, 43, reqBody);
 
+    m_port.write(req);
+
+    if (!m_port.waitForBytesWritten(m_timeOut))
+    {
+        return false;
+    }
+
+    if (m_port.waitForReadyRead(m_timeOut))
+    {
+        QByteArray responseData = m_port.readAll();
+        while (m_port.waitForReadyRead(20))
+            responseData += m_port.readAll();
+
+        if ( ! checkCRC(responseData))
+            return false;
+        if (responseData[1] != char(43) || responseData[0] != char(id) || responseData[2] != char(0x0e) || responseData[3] != char(1))
+            return false;
+        try
+        {
+            int numberOfObjects = responseData[7];
+            if (numberOfObjects < 3)
+                return false;
+            for (int i = 0, startIndex = 8; i < numberOfObjects; i++)
+            {
+                if (i != responseData[startIndex])
+                    return false;
+                int len = responseData[startIndex + 1];
+                switch (i)
+                {
+                case 0:
+                    vendor = QString(responseData[startIndex + 2], len);
+                    break;
+                case 1:
+                    product = QString(responseData[startIndex + 2], len);
+                    break;
+                case 2:
+                    version = QString(responseData[startIndex + 2], len);
+                    break;
+                }
+                startIndex += len + 2;
+            }
+        }
+        catch (...)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ModBusUART_Impl::checkCRC(const QByteArray& data) const
+{
+    int len = data.size();
+    if (len < 4)
+        return false;
+
+    quint16 crc = crc16(data.data(), len - 2);
+    quint16 crcInResponse = qFromLittleEndian<quint16>((const uchar *)data.data() + len - 2);
+    return (crc == crcInResponse);
 }
 
 void ModBusUART_Impl::communicationError(QSerialPort::SerialPortError err)
