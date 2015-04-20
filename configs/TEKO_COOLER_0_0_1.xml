@@ -4,7 +4,7 @@
     <Product>Cooller</Product>
     <Version>
         <min>0.0.0</min>
-        <max>0.0.1</max>
+        <max>0.1.0</max>
     </Version>
     <InputValues>
         <!-- List of all readable cooler registers -->
@@ -28,7 +28,7 @@
 		<E_FOULTFREE R="1" B="5">Неисправность фрикулинга</E_FOULTFREE>
 		
 		<!-- Input registers -->
-		<TINSIDE R="2">Температура внутренняя (от -55 до  +125°C)</>
+		<TINSIDE R="2" D="AT">Температура внутренняя (от -55 до  +125°C)</>
 		<TOUTSIDE R="3">Температура окружающая (от -55 до  +125°C) </>
 		<TKONDENSATOR R="4">Температура на сливе конденсатора (от -55 до  +125°C)</>
 		<TKARTER R="5">Температура картера (от -55 до  +125°C)</> 
@@ -39,6 +39,7 @@
 		<FANSPEEDKOND R="10">Скорость вращения вентилятора конденсатора  % </>
 		<FANSPEEDFREZER R="11">Скорость вращения вентилятора испарителя  % </>
 		<FANSPEEDFREECOOLER R="12">Скорость вращения вентилятора фрикулинга  % </>
+		<!--  Add more -->
     </InputValues>
 	
 	<OutValues>

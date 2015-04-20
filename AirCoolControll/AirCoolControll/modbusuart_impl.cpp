@@ -1,6 +1,7 @@
 #include "modbusuart_impl.h"
 #include <qdatastream.h>
 #include <QtEndian> 
+#include <QMutexLocker>
 
 ModBusUART_Impl::ModBusUART_Impl(const QString& name, QObject *parent)
     : QObject(parent),
@@ -40,7 +41,7 @@ void ModBusUART_Impl::setSpeed(int speed)
     m_port.setBaudRate(speed);
 }
 
-bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QList<quint16> o_list)
+bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QVector<quint16> o_list)
 {
     if (!m_port.isOpen())
         return false;
@@ -51,6 +52,8 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
     QByteArray data = QByteArray::fromRawData((const char*)& regNumberBig, sizeof(quint16));
     data += QByteArray::fromRawData((const char*)& regCountBig, sizeof(quint16));
     QByteArray req = makeRTUFrame(id, 3, data);
+
+    QMutexLocker locker(&m_mutex);
 
     m_port.write(req);
     if ( ! m_port.waitForBytesWritten(m_timeOut)) 
@@ -97,6 +100,8 @@ bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value
     data += QByteArray::fromRawData((const char*)& value, sizeof(qint16));
     QByteArray req = makeRTUFrame(id, 6, data);
 
+    QMutexLocker locker(&m_mutex);
+
     m_port.write(req);
 
     if (!m_port.waitForBytesWritten(m_timeOut))
@@ -126,6 +131,8 @@ bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& produ
 {
     const char reqBody[] = { char(0x0E), char(1), char(0) };
     QByteArray req = makeRTUFrame(id, 43, reqBody);
+
+    QMutexLocker locker(&m_mutex);
 
     m_port.write(req);
 

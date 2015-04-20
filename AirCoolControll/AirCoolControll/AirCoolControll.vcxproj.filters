@@ -161,6 +161,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_coolerstatepuller.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="PullerTask.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="aircoolcontroll.h">
@@ -215,6 +218,9 @@
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="coolerstatepuller.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PullerTask.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
