@@ -15,6 +15,7 @@ public:
     static const QString& getVersion();
     static const QVariant getSettings(const QString& key);
     static void setSettings(const QString& key, const QVariant& value);
+    static  QString getConfigFilesPath();
 
 private:
     const static QString s_version;

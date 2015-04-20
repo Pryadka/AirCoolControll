@@ -8,6 +8,7 @@
 #include <QtSerialPort\qserialport.h>
 #include <qtimer.h>
 #include <memory>
+#include "coollerexplorer.h"
 
 class Cooller_ModBusController : public QObject
 {
@@ -39,6 +40,7 @@ private:
     int                     m_currentDeviveID;
     ExternalConnector       m_connector;
     ExternalControllManager m_externalManager;
+    CoollerExplorer         m_explorer;
 };
 
 #endif // __Cooller_ModBusController__

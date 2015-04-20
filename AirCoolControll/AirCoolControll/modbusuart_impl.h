@@ -14,7 +14,7 @@ public:
 
     void   setTimeOut(int t);
     void   setSpeed(int speed);
-    bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QList<qint16>);
+    bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QList<quint16>);
     bool   writeRegister(quint16 id, quint16 regNumber, quint16 value);
     bool   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
 

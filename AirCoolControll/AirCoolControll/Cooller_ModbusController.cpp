@@ -14,7 +14,8 @@ Cooller_ModBusController::Cooller_ModBusController(CoolerStateWidget *view, ModB
     m_comunicationSpeedIndex(6), //9600
     m_currentDeviveID(-1),
     m_connector(this),
-    m_externalManager(this)
+    m_externalManager(this),
+    m_explorer(this)
 {
     connect(m_recheckTimer, SIGNAL(timeout()), this, SLOT(updateState()));
     m_recheckTimer->setInterval(500);
@@ -106,10 +107,7 @@ void Cooller_ModBusController::newPort(int n)
     {
         QSerialPortInfo a_info = m_info[n];
         QString name = a_info.portName();
-        ModBusUART_Impl p(name, this);
-        p.setSpeed(9600);
-        QList<qint16> list;
-        p.readRegisterPool(1, 0, 6, list);
+        m_explorer.setNewAdress(name, n);
     }
 }
 

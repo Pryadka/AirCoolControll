@@ -40,7 +40,7 @@ void ModBusUART_Impl::setSpeed(int speed)
     m_port.setBaudRate(speed);
 }
 
-bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QList<qint16> o_list)
+bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QList<quint16> o_list)
 {
     if (!m_port.isOpen())
         return false;

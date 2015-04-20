@@ -41,3 +41,8 @@ void Configurator::setSettings(const QString& key, const QVariant& value)
         s_settings->setValue(key, value);
     }
 }
+
+QString Configurator::getConfigFilesPath()
+{
+    return QApplication::applicationDirPath() + "/configs/";
+}
