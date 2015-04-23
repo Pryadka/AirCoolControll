@@ -1,13 +1,16 @@
 #include "ConfigMap.h"
+#include <boost/property_tree/xml_parser.hpp>
+
 
 
 ConfigMap::ConfigMap(const std::string& vendor, const std::string& product, const std::string& versionMin, const std::string& versionMax) :
     m_vendor(vendor),
     m_product(product),
-    m_versionMin(versionMin),
-    m_versionMax(versionMax),
-    m_inputRegistersInterval(0,0)
+    m_versionMin(QString::fromStdString(versionMin)),
+    m_versionMax(QString::fromStdString(versionMax))
 {
+    if ((!m_versionMin.isLegal()) || (!m_versionMax.isLegal()))
+        throw boost::property_tree::xml_parser_error("Bad version string in config file",product,0);
 }
 
 
@@ -42,13 +45,15 @@ bool ConfigMap::haveVariableWithName(const std::string& name) const
     return m_map.find(name) != m_map.end();
 }
 
-unsigned int  ConfigMap::getValue(const std::string& name, const QList<quint16>& array) const
+unsigned int  ConfigMap::getValue(const std::string& name, const QVector<quint16>& array) const
 {
     if (!haveVariableWithName(name))
         return -1;
 
     Parameter p = m_map.at(name);
-    qint16 ret = array[p.m_registerNumber];
+    int index = p.m_registerNumber - ((p.m_isWriteble) ? m_outputRegistersInterval.first : m_inputRegistersInterval.first);
+  
+    qint16 ret = array[index];
 
     if (p.m_isBool)
     {
@@ -58,7 +63,42 @@ unsigned int  ConfigMap::getValue(const std::string& name, const QList<quint16>&
     return ret;
 }
 
-std::pair<int, int> ConfigMap::getInputInterval() const
+Interval& ConfigMap::getInputInterval() 
 {
     return m_inputRegistersInterval;
+}
+
+Interval& ConfigMap::getOutputInterval()
+{
+    return m_outputRegistersInterval;
+}
+
+bool ConfigMap::isVariableOut(const std::string& name) const
+{
+    return m_outputRegistersInterval.in(getRegisterNumber(name));
+}
+
+bool  ConfigMap::isSupport(const DeviceInfo& info) const
+{
+    if (QString::compare(info.m_vendor, QString::fromStdString(m_vendor), Qt::CaseInsensitive) != 0 || QString::compare(info.m_product, QString::fromStdString(m_product), Qt::CaseInsensitive) != 0)
+        return false;
+
+    return info.m_version <= m_versionMax && info.m_version >= m_versionMin;
+}
+
+ConfigMap::ParameterList ConfigMap::getInputParametersList(bool isForRead) const
+{
+    std::vector<std::pair<std::string, std::string>> rc;
+    for (std::pair<std::string, Parameter> a_record : m_map)
+    {
+        if (a_record.second.m_isWriteble != isForRead)
+            rc.push_back(std::pair<std::string, std::string>(a_record.first, a_record.second.m_description));
+    }
+
+    return rc;
+}
+
+ConfigMap::ParameterList ConfigMap::getOutputParametersList() const
+{
+    return getInputParametersList(false);
 }

@@ -12,23 +12,23 @@ ModBusUART_Impl::ModBusUART_Impl(const QString& name, QObject *parent)
     m_port.setPortName(name);
     if (m_port.open(QIODevice::ReadWrite)) 
     {
-       
+        m_isOpen = true;
     }
     else 
     {
+        m_isOpen = false;
         return;
     }
     
     m_port.setDataBits(QSerialPort::Data8);
     m_port.setFlowControl(QSerialPort::NoFlowControl);
     m_port.setStopBits(QSerialPort::OneStop);
-    m_port.setParity(QSerialPort::NoParity);
-    
+    m_port.setParity(QSerialPort::NoParity);  
 }
 
 ModBusUART_Impl::~ModBusUART_Impl()
 {
-
+    m_port.close();
 }
 
 void ModBusUART_Impl::setTimeOut(int t)
@@ -130,7 +130,9 @@ bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value
 bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version)
 {
     const char reqBody[] = { char(0x0E), char(1), char(0) };
-    QByteArray req = makeRTUFrame(id, 43, reqBody);
+    QByteArray reqBodyArray(reqBody);
+    reqBodyArray.append(char(0));
+    QByteArray req = makeRTUFrame(id, 43, reqBodyArray);
 
     QMutexLocker locker(&m_mutex);
 
@@ -161,27 +163,29 @@ bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& produ
                 if (i != responseData[startIndex])
                     return false;
                 int len = responseData[startIndex + 1];
+                std::string a_string(responseData.data() + startIndex + 2,len);
                 switch (i)
                 {
                 case 0:
-                    vendor = QString(responseData[startIndex + 2], len);
+                    vendor = QString::fromStdString(a_string);
                     break;
                 case 1:
-                    product = QString(responseData[startIndex + 2], len);
+                    product = QString::fromStdString(a_string);
                     break;
                 case 2:
-                    version = QString(responseData[startIndex + 2], len);
+                    version = QString::fromStdString(a_string);
                     break;
                 }
                 startIndex += len + 2;
-            }
+            } 
+            return true;
         }
         catch (...)
         {
-            return false;
+           
         }
     }
-    return true;
+    return false;
 }
 
 bool ModBusUART_Impl::checkCRC(const QByteArray& data) const

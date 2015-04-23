@@ -33,12 +33,21 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
+    <Filter Include="Header Files\Widgets">
+      <UniqueIdentifier>{6619f16d-9c74-4161-b15c-5849867a08fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{bb016534-85f2-4754-8466-b871c853cdb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ExternalConnection">
+      <UniqueIdentifier>{f880e073-cf3f-40ae-8b0d-13b9f07b9aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ExternalConnection">
+      <UniqueIdentifier>{42ccae5d-eb7f-4827-b1a4-c8da169f7786}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="aircoolcontroll.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_aircoolcontroll.cpp">
@@ -50,17 +59,11 @@
     <ClCompile Include="GeneratedFiles\qrc_aircoolcontroll.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="connectionparameters.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_connectionparameters.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_connectionparameters.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="connectionlog.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_connectionlog.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -68,17 +71,11 @@
     <ClCompile Include="GeneratedFiles\Release\moc_connectionlog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="modbusdialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_modbusdialog.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_modbusdialog.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="coolerstatewidget.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_coolerstatewidget.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -86,26 +83,17 @@
     <ClCompile Include="GeneratedFiles\Release\moc_coolerstatewidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="externalcontrollmanager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_externalcontrollmanager.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_externalcontrollmanager.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="externalconnector.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_externalconnector.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_externalconnector.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="iplineedit.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_iplineedit.cpp">
       <Filter>Generated Files\Debug</Filter>
@@ -114,9 +102,6 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="Logger.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="RequestRouter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Configurator.cpp">
@@ -152,61 +137,79 @@
     <ClCompile Include="ConfigMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="coolerstatepuller.cpp">
+    <ClCompile Include="PullerTask.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_coolerstatepuller.cpp">
+    <ClCompile Include="aircoolcontroll.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="connectionparameters.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="coolerstatewidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="iplineedit.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="modbusdialog.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="externalconnector.cpp">
+      <Filter>Source Files\ExternalConnection</Filter>
+    </ClCompile>
+    <ClCompile Include="externalcontrollmanager.cpp">
+      <Filter>Source Files\ExternalConnection</Filter>
+    </ClCompile>
+    <ClCompile Include="connectionlog.cpp">
+      <Filter>Source Files\ExternalConnection</Filter>
+    </ClCompile>
+    <ClCompile Include="RequestRouter.cpp">
+      <Filter>Source Files\ExternalConnection</Filter>
+    </ClCompile>
+    <ClCompile Include="Interval.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VersionStorage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ModbusDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ModbusDriver.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_coolerstatepuller.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_ModbusDriver.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="PullerTask.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_ModbusRegisterPuller.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ModbusRegisterPuller.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="ModbusRegisterPuller.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="aircoolcontroll.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="aircoolcontroll.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="aircoolcontroll.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="connectionparameters.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="connectionparameters.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="connectionlog.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="connectionlog.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="modbusdialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="modbusdialog.ui">
       <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="coolerstatewidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="coolerstatewidget.ui">
       <Filter>Form Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="externalcontrollmanager.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="externalconnector.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="iplineedit.h">
-      <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="modbusuart_impl.h">
       <Filter>Header Files</Filter>
@@ -217,10 +220,37 @@
     <CustomBuild Include="coollerexplorer.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="coolerstatepuller.h">
+    <CustomBuild Include="PullerTask.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="PullerTask.h">
+    <CustomBuild Include="aircoolcontroll.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="connectionparameters.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="coolerstatewidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="iplineedit.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="modbusdialog.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="externalconnector.h">
+      <Filter>Header Files\ExternalConnection</Filter>
+    </CustomBuild>
+    <CustomBuild Include="externalcontrollmanager.h">
+      <Filter>Header Files\ExternalConnection</Filter>
+    </CustomBuild>
+    <CustomBuild Include="connectionlog.h">
+      <Filter>Header Files\ExternalConnection</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ModbusDriver.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="ModbusRegisterPuller.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -243,13 +273,19 @@
     <ClInclude Include="Logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RequestRouter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Configurator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ConfigMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RequestRouter.h">
+      <Filter>Header Files\ExternalConnection</Filter>
+    </ClInclude>
+    <ClInclude Include="Interval.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VersionStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

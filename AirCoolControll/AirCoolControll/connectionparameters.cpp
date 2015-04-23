@@ -107,6 +107,11 @@ void ConnectionParameters::portValueChanged(int n)
     emit portChanged(n);
 }
 
+void ConnectionParameters::setDeviceIndex(int n)
+{
+    ui.spinBoxID->setValue(n);
+}
+
 void ConnectionParameters::controllTabChanged(int newTabNumder)
 {
 

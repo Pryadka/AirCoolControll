@@ -40,6 +40,11 @@ int ModBusDialog::getDeviceIndex()
     return ui.parameters->getDeviceIndex();
 }
 
+void ModBusDialog::setDeviceIndex(int n)
+{
+    return ui.parameters->setDeviceIndex(n);
+}
+
 void ModBusDialog::setError(QString & errorString,bool critical)
 {
     ui.parameters->setError(errorString,critical);

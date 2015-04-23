@@ -2,11 +2,12 @@
 #include <QMutexLocker>
 
 
-PullerTask::PullerTask(int id, std::pair<int, int> range) :
+PullerTask::PullerTask(int id,Interval& range) :
     m_id(id),
     m_range(range),
     m_mutex(new QMutex())
 {
+    m_pull.resize(range.second - range.first + 1);
 }
 
 
@@ -29,7 +30,7 @@ void PullerTask::getContent(QVector<quint16>& list)
 
 void PullerTask::setContent(const QVector<quint16>& list)
 {
-    if (list != m_pull)
+    if (list.size() == m_pull.size())
     {
         QMutexLocker lock(m_mutex);
         m_isUpdated = true;
@@ -42,7 +43,7 @@ int  PullerTask::getID() const
     return m_id;
 }
 
-const std::pair<int, int>& PullerTask::getRange() const
+const Interval& PullerTask::getRange() const
 {
     return m_range;
 }

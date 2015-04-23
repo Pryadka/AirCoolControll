@@ -9,6 +9,7 @@
 #include <qtimer.h>
 #include <memory>
 #include "coollerexplorer.h"
+#include "ModbusDriver.h"
 
 class Cooller_ModBusController : public QObject
 {
@@ -20,6 +21,8 @@ public:
 private:
     void checkConnectionState(void);
     static bool equalPredicat(QSerialPortInfo& first,QSerialPortInfo& second);
+    bool readXMLConfig(const QString& path);
+    void updateStateWidget(void);
 
 private slots:
     void updateState(void);
@@ -30,17 +33,25 @@ private slots:
     void externalStateChanged(void);
     void externalListChanged(void);
 
+signals:
+    void newStatus(const QString&);
+
 private:
     CoolerStateWidget *     m_view;
-    ModBusDialog *          m_config;
+    ModBusDialog *          m_configDialog;
     QList<QSerialPortInfo>  m_info;
     QTimer   *              m_recheckTimer;
     bool                    m_available;
     int                     m_comunicationSpeedIndex;
-    int                     m_currentDeviveID;
+    int                     m_currentDeviceID;
     ExternalConnector       m_connector;
     ExternalControllManager m_externalManager;
-    CoollerExplorer         m_explorer;
+    ConfigList              m_configs;
+    CoollerExplorerShared   m_explorer;
+    ModbusDriver            m_modbus;
+
+    ConfigMap::ParameterList m_inParameters;
+    ConfigMap::ParameterList m_outParameters;
 };
 
 #endif // __Cooller_ModBusController__

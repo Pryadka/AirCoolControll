@@ -1,46 +1,87 @@
 #include "coollerexplorer.h"
-#include "Configurator.h"
 #include "Logger.h"
 #include "ConfigMap.h"
-#include <qdiriterator.h>
 #include <boost/property_tree/xml_parser.hpp>
+#include <cfloat>
 
-CoollerExplorer::CoollerExplorer(QObject *parent)
+CoollerExplorer::CoollerExplorer(const ConfigList& configs, ModbusDriver& modbus, int id, QObject *parent)
     : QObject(parent),
-    m_state(Ready)
+    m_state(Ready),
+    m_currentDeviceID(0),
+    m_configs(configs),
+    m_modbus(modbus)
 {
-    QString configsPath = Configurator::getConfigFilesPath();
-    QDirIterator iter(configsPath, QStringList() << "*.xml", QDir::Files | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags);
-    int configsRed = 0;
-    while (iter.hasNext())
+    m_currentDeviceID = id;
+    DeviceInfo info;
+    if (!m_modbus.readDeviceInfo(id, info))
     {
-        iter.next();
-        QString xmlFilePath = iter.filePath();
-        if (readXMLConfig(xmlFilePath))
-            configsRed++;
+        m_errorString = tr("Can't read device identification information");
+        m_state = DeviceNotReady;
+        return;
     }
-    if (0 == configsRed)
-        m_state = NoConfigs;
+
+    bool rc = false;
+    for (std::shared_ptr<ConfigMap> a_map : m_configs)
+    {
+        if (a_map->isSupport(info))
+        {
+            m_currentMap = a_map;
+            rc = true;
+            break;
+        }
+    }
+    
+    if (!rc)
+    {
+        m_errorString = tr("Can't find suitable config file for this device");
+        m_state = ConfigNotFound;
+    } 
+    else
+    {
+        Interval i_int = m_currentMap->getInputInterval();
+        Interval o_int = m_currentMap->getOutputInterval();
+        m_inRegisters = std::make_shared<PullerTask>(m_currentDeviceID,i_int);
+        m_outRegisters = std::make_shared<PullerTask>(m_currentDeviceID,o_int);
+        m_modbus.addPullerTask(m_inRegisters);
+        m_modbus.addPullerTask(m_outRegisters);
+        m_localInPull.resize(i_int.second - i_int.first + 1);
+        m_localOutPull.resize(o_int.second - o_int.first + 1);
+    }
 }
 
 CoollerExplorer::~CoollerExplorer()
 {
-
+    m_modbus.removeTaskWithID(m_currentDeviceID);
 }
 
-bool CoollerExplorer::setNewAdress(const QString& portName, int id)
+bool  CoollerExplorer::getRegisterValue(const std::string & key,int& value)
 {
+    if (m_state != Ready || ! m_currentMap->haveVariableWithName(key))
+        return false;
+
+    if (m_currentMap->isVariableOut(key))
+    {
+        if (m_outRegisters->isContentChanged())
+            m_outRegisters->getContent(m_localOutPull);
+        value = m_currentMap->getValue(key, m_localOutPull);
+    }
+    else
+    {
+        if (m_inRegisters->isContentChanged())
+            m_inRegisters->getContent(m_localInPull);
+        value = m_currentMap->getValue(key, m_localInPull);
+    }
+
     return true;
 }
 
-int  CoollerExplorer::getRegisterValue(int regNumber)
+bool CoollerExplorer::setRegisterValue(const std::string & key,int value)
 {
-    return 0;
-}
-
-bool CoollerExplorer::setRegisterValue(int regNumber, int value)
-{
-    return true;
+    if (m_currentDeviceID != 0 && m_currentMap->haveVariableWithName(key))
+    {
+        return m_modbus.writeRegister(m_currentDeviceID, m_currentMap->getRegisterNumber(key), value);
+    }
+    return false;
 }
 
 QString CoollerExplorer::errorString()
@@ -48,58 +89,3 @@ QString CoollerExplorer::errorString()
     return m_errorString;
 }
 
-bool CoollerExplorer::readXMLConfig(const QString& path)
-{
-    boost::property_tree::ptree tree;
-    try
-    {
-        boost::property_tree::read_xml(path.toStdString(), tree, boost::property_tree::xml_parser::no_comments);
-        std::string vendor = tree.get<std::string>("Config.Vendor");
-        std::string product = tree.get<std::string>("Config.Product");
-        std::string versionMin = tree.get<std::string>("Config.Version.min");
-        std::string versionMax = tree.get<std::string>("Config.Version.max");
-        ConfigMap a_map(vendor,product,versionMin,versionMax);
-
-        boost::property_tree::ptree values = tree.get_child("Config.InputValues");
-        for (const std::pair<std::string, boost::property_tree::ptree> &p : values)
-        {
-            std::string name = p.first;
-            ConfigMap::Parameter a_parameter;
-            a_parameter.m_description = p.second.get_value<std::string>();
-            a_parameter.m_registerNumber = p.second.get<int>("<xmlattr>.R");
-            int b = p.second.get<int>("<xmlattr>.B",-1);
-            if (b != -1)
-            {
-                a_parameter.m_isBool = true;
-                a_parameter.m_bitNumber = b;
-            }
-            a_map.addVariable(name, a_parameter);
-        }
-        
-        values = tree.get_child("Config.OutValues");
-        for (const std::pair<std::string, boost::property_tree::ptree> &p : values)
-        {
-            std::string name = p.first;
-            ConfigMap::Parameter a_parameter;
-            a_parameter.m_description = p.second.get_value<std::string>();
-            a_parameter.m_registerNumber = p.second.get<int>("<xmlattr>.R");
-            a_parameter.m_isWriteble = true;
-            a_map.addVariable(name, a_parameter);
-        }
-        m_configs.push_back(a_map);
-    }
-    catch (boost::property_tree::xml_parser_error& err)
-    {
-        Logger::log(err.message(), Logger::Error);
-        m_errorString = QString::fromStdString(err.message());
-        return false;
-    }
-    catch (boost::property_tree::ptree_bad_data& err)
-    {
-        Logger::log(err.what(), Logger::Error);
-        m_errorString = QString::fromStdString(err.what());
-        return false;
-    }
-
-    return true;
-}

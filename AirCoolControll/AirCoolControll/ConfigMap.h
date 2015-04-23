@@ -3,7 +3,12 @@
 
 #include <string>
 #include <map>
-#include <qlist.h>
+#include <qvector.h>
+#include <Interval.h>
+#include <qstring.h>
+#include "VersionStorage.h"
+#include <memory>
+#include "modbusuart_impl.h"
 
 class ConfigMap
 {
@@ -18,22 +23,37 @@ public:
         bool         m_isBool = false;
         bool         m_isWriteble = false;
         int          m_bitNumber;
+        std::string  m_decodeMethod;
+        float        m_minValue;
+        float        m_maxValue;
     } Parameter;
 
+    typedef std::vector<std::pair<std::string, std::string>> ParameterList;
+    typedef std::map<std::string, Parameter> ParameterMap;
+
     void addVariable(const std::string& name, const Parameter& p);
+    bool isVariableOut(const std::string& name) const;
     int  getRegisterNumber(const std::string& name) const;
     bool haveVariableWithName(const std::string& name) const;
-    unsigned int  getValue(const std::string& name, const QList<quint16>& array) const;
-    std::pair<int, int> getInputInterval() const;
+    unsigned int  getValue(const std::string& name, const QVector<quint16>& array) const;
+    Interval& getInputInterval();
+    Interval& getOutputInterval();
+    bool  isSupport(const DeviceInfo& info) const;
+    ParameterList getInputParametersList(bool isForRead = true) const;
+    ParameterList getOutputParametersList() const;
 
 private:
     std::string     m_vendor;
     std::string     m_product;
-    std::string     m_versionMin;
-    std::string     m_versionMax;
+    VersionStorage  m_versionMin;
+    VersionStorage  m_versionMax;
 
-    std::map<std::string, Parameter> m_map;
-    std::pair<int, int>              m_inputRegistersInterval;
+    ParameterMap    m_map;
+    Interval        m_inputRegistersInterval;
+    Interval        m_outputRegistersInterval;
 };
+
+typedef std::shared_ptr<ConfigMap> ConfigMapShared;
+typedef std::list<ConfigMapShared> ConfigList;
 
 #endif // __CONFIGMAP__

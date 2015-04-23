@@ -67,3 +67,32 @@ void CoolerStateWidget::rightWindState(bool on)
 {
     m_rightWindOn = on;
 }
+
+void CoolerStateWidget::setInputParameterList(const std::vector<std::pair<std::string, std::string>>& list)
+{
+    ui.inputParametersTable->setRowCount(list.size());
+    int currentRow = 0;
+    for (std::pair<std::string, std::string> a_line : list)
+    {
+        QTableWidgetItem *newItem = new QTableWidgetItem(QString::fromStdString(a_line.first));
+        ui.inputParametersTable->setItem(currentRow,0, newItem);
+        newItem = new QTableWidgetItem(QString::fromStdString(a_line.second));
+        ui.inputParametersTable->setItem(currentRow, 2, newItem);
+        currentRow++;
+    }
+}
+
+void CoolerStateWidget::setOutputParameterList(const std::vector<std::pair<std::string, std::string>>& list)
+{
+
+}
+
+void CoolerStateWidget::updateInputParameter(int n, int value)
+{
+
+}
+
+void CoolerStateWidget::updateOutputParameter(int n, int value)
+{
+
+}

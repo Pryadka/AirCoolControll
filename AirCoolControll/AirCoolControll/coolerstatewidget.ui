@@ -58,7 +58,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QTableWidget" name="tableWidget">
+       <widget class="QTableWidget" name="inputParametersTable">
         <property name="columnCount">
          <number>3</number>
         </property>
@@ -118,8 +118,7 @@
        <pixmap resource="aircoolcontroll.qrc">:/Images/right_stream_0.gif</pixmap>
       </property>
      </widget>
-     <zorder>layoutWidget</zorder>
-     <zorder>gridLayoutWidget</zorder>
+     <zorder>inputParametersTable</zorder>
      <zorder>label</zorder>
      <zorder>label_left_arrow</zorder>
      <zorder>label_right_arrow</zorder>
@@ -129,7 +128,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>tableWidget</tabstop>
+  <tabstop>inputParametersTable</tabstop>
  </tabstops>
  <resources>
   <include location="aircoolcontroll.qrc"/>

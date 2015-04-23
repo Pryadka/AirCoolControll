@@ -5,6 +5,20 @@
 #include <QtSerialPort\qserialport.h>
 #include <qvector.h>
 #include <qmutex.h>
+#include <memory>
+#include "VersionStorage.h"
+
+
+struct DeviceInfo
+{
+    DeviceInfo(const QString& ven, const QString& p, const QString& ver) : m_vendor(ven), m_product(p), m_version(ver){}
+    DeviceInfo(){} 
+    QString        m_vendor;
+    QString        m_product;
+    VersionStorage m_version;
+};
+
+typedef std::map<int, DeviceInfo> DeviceInfoMap;
 
 class ModBusUART_Impl : public QObject
 {
@@ -19,6 +33,7 @@ public:
     bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QVector<quint16>);
     bool   writeRegister(quint16 id, quint16 regNumber, quint16 value);
     bool   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
+    bool   isOpen(){ return m_isOpen; }
 
 private slots:
     void communicationError(QSerialPort::SerialPortError);
@@ -33,9 +48,11 @@ private:
     bool checkCRC(const QByteArray& data) const;
 
 private:
-    QSerialPort             m_port;
-    int                     m_timeOut;
-    mutable QMutex          m_mutex;
+    QSerialPort     m_port;
+    int             m_timeOut;
+    mutable QMutex  m_mutex;
+    bool            m_isOpen;
 };
 
+typedef std::shared_ptr<ModBusUART_Impl> ModBusUART_ImplShared;
 #endif // MODBUSUART_IMPL_H

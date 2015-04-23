@@ -17,6 +17,12 @@ public:
     void leftWindState(bool on);
     void rightWindState(bool on);
 
+    void setInputParameterList(const std::vector<std::pair<std::string,std::string>>& list);
+    void setOutputParameterList(const std::vector<std::pair<std::string, std::string>>& list);
+
+    void updateInputParameter(int n,int value);
+    void updateOutputParameter(int n,int value);
+
 private slots:
     void updateViewElements(void);
 

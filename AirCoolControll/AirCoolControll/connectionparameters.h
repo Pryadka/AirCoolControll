@@ -30,6 +30,7 @@ public:
 
     int getSpeed();
     int getDeviceIndex();
+    void setDeviceIndex(int n);
 
     void setError(const QString & errorString,bool critical = false);
     void clearError(void);
