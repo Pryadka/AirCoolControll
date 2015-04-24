@@ -2,31 +2,12 @@
 
 
 CoolerStateWidget::CoolerStateWidget(QWidget *parent)
-    : QWidget(parent),
-    m_leftWindOn(false),
-    m_rightWindOn(false),
-    m_windState(0),
-    m_viewTimer(this)   
+    : QWidget(parent)
 { 
-    s_left_arrows[0] = QPixmap(":/Images/left_stream_0.gif");
-    s_left_arrows[1] = QPixmap(":/Images/left_stream_1.gif");
-    s_left_arrows[2] = QPixmap(":/Images/left_stream_2.gif");
-    s_left_arrows[3] = QPixmap(":/Images/left_stream_3.gif");
-
-    s_right_arrows[0] = QPixmap(":/Images/right_stream_0.gif");
-    s_right_arrows[1] = QPixmap(":/Images/right_stream_1.gif");
-    s_right_arrows[2] = QPixmap(":/Images/right_stream_2.gif");
-    s_right_arrows[3] = QPixmap(":/Images/right_stream_3.gif");
-    
     ui.setupUi(this);
 
-    ui.label_left_arrow->setHidden(true);
-    ui.label_right_arrow->setHidden(true);
-
-    connect(&m_viewTimer, SIGNAL(timeout()), this, SLOT(updateViewElements(void)));
-
-    m_viewTimer.setInterval(300);
-    m_viewTimer.start();
+    ui.inputParametersTable->setSortingEnabled(false);
+    connect(ui.outputParametersTable, SIGNAL(itemChanged(QStandardItem *)), this, SLOT(registerSet(QStandardItem *)));
 }
 
 CoolerStateWidget::~CoolerStateWidget()
@@ -34,65 +15,51 @@ CoolerStateWidget::~CoolerStateWidget()
 
 }
 
-void CoolerStateWidget::updateViewElements(void)
+void CoolerStateWidget::setParameterList(const std::vector<std::pair<std::string, std::string>>& list,bool isInput)
 {
-    m_windState++;
-    if (m_windState >= AnimationSteps)
-        m_windState = 0;
+    QTableWidget * widget = isInput ? ui.inputParametersTable : ui.outputParametersTable;
 
-    if (m_leftWindOn)
-    {
-        ui.label_left_arrow->setHidden(false);
-        ui.label_left_arrow->setPixmap(s_left_arrows[m_windState]);
-    }
+    Qt::ItemFlags f;
+    if (isInput)
+        f = Qt::ItemIsEnabled;
+    else
+        f = Qt::ItemIsEnabled | Qt::ItemIsEditable;
 
-    if (m_rightWindOn)
-    {
-        ui.label_right_arrow->setHidden(false);
-        ui.label_right_arrow->setPixmap(s_right_arrows[m_windState]);
-    }
-
-    if (m_leftWindOn || m_rightWindOn)
-    {
-        update();
-    }
-}
-
-void CoolerStateWidget::leftWindState(bool on)
-{
-    m_leftWindOn = on;
-}
-
-void CoolerStateWidget::rightWindState(bool on)
-{
-    m_rightWindOn = on;
-}
-
-void CoolerStateWidget::setInputParameterList(const std::vector<std::pair<std::string, std::string>>& list)
-{
-    ui.inputParametersTable->setRowCount(list.size());
+    widget->setRowCount(list.size());
     int currentRow = 0;
     for (std::pair<std::string, std::string> a_line : list)
     {
         QTableWidgetItem *newItem = new QTableWidgetItem(QString::fromStdString(a_line.first));
-        ui.inputParametersTable->setItem(currentRow,0, newItem);
+        newItem->setFlags(Qt::ItemIsEnabled);
+        widget->setItem(currentRow, 0, newItem);
+        
         newItem = new QTableWidgetItem(QString::fromStdString(a_line.second));
-        ui.inputParametersTable->setItem(currentRow, 2, newItem);
+        newItem->setFlags(Qt::ItemIsEnabled);
+        widget->setItem(currentRow, 2, newItem);
+
+        newItem = new QTableWidgetItem(QString());
+        newItem->setFlags(f);
+        widget->setItem(currentRow, 1, newItem);
         currentRow++;
     }
 }
 
-void CoolerStateWidget::setOutputParameterList(const std::vector<std::pair<std::string, std::string>>& list)
+void CoolerStateWidget::updateParameter(int n, int value, bool isInput)
 {
-
+    QTableWidget * widget = isInput ? ui.inputParametersTable : ui.outputParametersTable;
+    QTableWidgetItem *aItem = widget->item(n, 1);
+    if(NULL != aItem)
+        aItem->setText(QString::number(value));
 }
 
-void CoolerStateWidget::updateInputParameter(int n, int value)
+void CoolerStateWidget::registerSet(QStandardItem *item)
 {
-
-}
-
-void CoolerStateWidget::updateOutputParameter(int n, int value)
-{
-
+    QString text = item->data(Qt::UserRole).toString();
+    bool ok;
+    int d = text.toInt(&ok);
+    if (ok)
+    {
+        QString name = ui.outputParametersTable->item(0, 0)->data(Qt::UserRole).toString();
+        emit newRegisterValue(name, d);
+    }
 }

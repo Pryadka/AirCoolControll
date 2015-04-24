@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>662</width>
-    <height>548</height>
+    <height>531</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -48,88 +48,119 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string/>
+       <widget class="QSplitter" name="splitter">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
-        <property name="pixmap">
-         <pixmap resource="aircoolcontroll.qrc">:/Images/shema-konditsionera.gif</pixmap>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QTableWidget" name="inputParametersTable">
-        <property name="columnCount">
-         <number>3</number>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Name</string>
+        <widget class="CoollerGraphWidget" name="widget" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout"/>
+        </widget>
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Value</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Description</string>
-         </property>
-        </column>
+         <widget class="QWidget" name="tab">
+          <attribute name="title">
+           <string>Input Parameters</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="inputParametersTable">
+             <property name="columnCount">
+              <number>3</number>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderDefaultSectionSize">
+              <number>20</number>
+             </attribute>
+             <attribute name="verticalHeaderMinimumSectionSize">
+              <number>20</number>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Name</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Value</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Description</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="tab_2">
+          <attribute name="title">
+           <string>Output parameters</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QTableWidget" name="outputParametersTable">
+             <property name="maximumSize">
+              <size>
+               <width>616</width>
+               <height>436</height>
+              </size>
+             </property>
+             <attribute name="horizontalHeaderStretchLastSection">
+              <bool>true</bool>
+             </attribute>
+             <attribute name="verticalHeaderVisible">
+              <bool>false</bool>
+             </attribute>
+             <attribute name="verticalHeaderDefaultSectionSize">
+              <number>20</number>
+             </attribute>
+             <attribute name="verticalHeaderMinimumSectionSize">
+              <number>20</number>
+             </attribute>
+             <column>
+              <property name="text">
+               <string>Name</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Value</string>
+              </property>
+             </column>
+             <column>
+              <property name="text">
+               <string>Description</string>
+              </property>
+             </column>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
        </widget>
       </item>
      </layout>
-     <widget class="QLabel" name="label_left_arrow">
-      <property name="geometry">
-       <rect>
-        <x>170</x>
-        <y>120</y>
-        <width>36</width>
-        <height>107</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="aircoolcontroll.qrc">:/Images/left_stream_0.gif</pixmap>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_right_arrow">
-      <property name="geometry">
-       <rect>
-        <x>480</x>
-        <y>130</y>
-        <width>31</width>
-        <height>101</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="pixmap">
-       <pixmap resource="aircoolcontroll.qrc">:/Images/right_stream_0.gif</pixmap>
-      </property>
-     </widget>
-     <zorder>inputParametersTable</zorder>
-     <zorder>label</zorder>
-     <zorder>label_left_arrow</zorder>
-     <zorder>label_right_arrow</zorder>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <tabstops>
-  <tabstop>inputParametersTable</tabstop>
- </tabstops>
+ <customwidgets>
+  <customwidget>
+   <class>CoollerGraphWidget</class>
+   <extends>QWidget</extends>
+   <header>coollergraphwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="aircoolcontroll.qrc"/>
  </resources>

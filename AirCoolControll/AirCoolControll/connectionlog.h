@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "ui_connectionlog.h"
+#include "modbusuart_impl.h"
 
 class ConnectionLog : public QWidget
 {
@@ -12,7 +13,7 @@ public:
     ConnectionLog(QWidget *parent = 0);
     ~ConnectionLog();
 
-    void addRecord();
+    void setDeviceList(const DeviceInfoMap& map);
 
 public:
     Ui::ConnectionLog ui;

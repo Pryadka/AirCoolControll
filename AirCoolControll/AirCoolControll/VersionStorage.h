@@ -14,6 +14,7 @@ public:
     bool operator<=(const VersionStorage& other) const;
     bool operator>=(const VersionStorage& other) const { return !operator<=(other); }
     bool operator==(const VersionStorage& other) const;
+    explicit operator QString() const;
 
 private:
     static bool versionFilter(QChar c);

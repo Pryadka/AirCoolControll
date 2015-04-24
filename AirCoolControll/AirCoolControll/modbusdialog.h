@@ -5,6 +5,7 @@
 #include "ui_modbusdialog.h"
 #include <QtSerialPort\qserialportinfo.h>
 #include "externalconnector.h"
+#include "modbusuart_impl.h"
 
 class ModBusDialog : public QWidget
 {
@@ -26,6 +27,8 @@ public:
     int  getSpeed();
     int  getDeviceIndex();
     void setDeviceIndex(int n);
+
+    void setDeviceList(const DeviceInfoMap& map);
 
     void setError(QString & errorString, bool critical = false);
     void clearError(void);

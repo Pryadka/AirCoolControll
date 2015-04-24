@@ -2,7 +2,7 @@
 #define __CONFIGMAP__
 
 #include <string>
-#include <map>
+#include <unordered_map>
 #include <qvector.h>
 #include <Interval.h>
 #include <qstring.h>
@@ -29,7 +29,7 @@ public:
     } Parameter;
 
     typedef std::vector<std::pair<std::string, std::string>> ParameterList;
-    typedef std::map<std::string, Parameter> ParameterMap;
+    typedef std::unordered_map<std::string, Parameter> ParameterMap;
 
     void addVariable(const std::string& name, const Parameter& p);
     bool isVariableOut(const std::string& name) const;
@@ -41,6 +41,9 @@ public:
     bool  isSupport(const DeviceInfo& info) const;
     ParameterList getInputParametersList(bool isForRead = true) const;
     ParameterList getOutputParametersList() const;
+
+private:
+    static qint16 decodeWithMethod(qint16 value, const std::string& method);
 
 private:
     std::string     m_vendor;

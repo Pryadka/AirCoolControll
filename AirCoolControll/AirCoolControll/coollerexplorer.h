@@ -22,6 +22,7 @@ public:
     QString errorString();
     ConfigMapShared getCurrentConfig(){ return m_currentMap; }
     State getState(){ return m_state; }
+    void  stopTasks();
 
 private:
     

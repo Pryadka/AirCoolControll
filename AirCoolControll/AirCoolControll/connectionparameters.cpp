@@ -59,8 +59,8 @@ void ConnectionParameters::setCOMlist(QList<QSerialPortInfo>& list)
 void ConnectionParameters::setExternalComunicator(ExternalConnector * comunicator)
 {
     m_connector = comunicator;
-    connect(m_connector, SIGNAL(socketConnected()), this, SLOT(externalConnected()));
-    connect(m_connector, SIGNAL(socketDisconnected()), this, SLOT(externalDisconnected()));
+    connect(m_connector, SIGNAL(connectionEstablished()), this, SLOT(externalConnected()));
+    connect(m_connector, SIGNAL(connectionBroken()), this, SLOT(externalDisconnected()));
 }
 
 int ConnectionParameters::getSpeed()

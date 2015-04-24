@@ -5,6 +5,7 @@
 #include "ui_aircoolcontroll.h"
 #include "modbusdialog.h"
 #include "coolerstatewidget.h"
+#include "Cooller_ModbusController.h"
 
 class AirCoolControll : public QMainWindow
 {
@@ -18,7 +19,8 @@ public:
     ModBusDialog *      getConfigWidget();
 
 private:
-    Ui::AirCoolControllClass ui;
+    Ui::AirCoolControllClass  ui;
+    Cooller_ModBusController* m_comunicator; 
 };
 
 #endif // AIRCOOLCONTROLL_H

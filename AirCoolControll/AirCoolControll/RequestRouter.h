@@ -3,14 +3,14 @@
 
 #include <functional>
 #include <boost/property_tree/xml_parser.hpp>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 class RequestRouter
 {
 public:
     typedef std::function<void(boost::property_tree::ptree*)> RouterProc;
-    typedef std::map<std::string, RouterProc> RouterMap;
+    typedef std::unordered_map<std::string, RouterProc> RouterMap;
     typedef std::pair<std::string, RouterProc> RouterPair;
 
     RequestRouter(const RouterMap& map);

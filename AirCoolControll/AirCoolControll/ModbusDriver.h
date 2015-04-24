@@ -28,6 +28,9 @@ public:
 signals:
     void deviceListUpdated(void);
 
+private slots:
+    void UARTfail(void);
+
 private:
     ModBusUART_ImplShared m_modbus;
     ModbusRegisterPuller  m_puller;

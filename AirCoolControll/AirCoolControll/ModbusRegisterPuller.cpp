@@ -3,14 +3,17 @@
 ModbusRegisterPuller::ModbusRegisterPuller(QObject *parent)
     : QThread(parent),
     m_modbus(NULL),
-    m_isStoped(true)
+    m_isStoped(true),
+    m_continueProcessing(true)
 {
 
 }
 
 ModbusRegisterPuller::~ModbusRegisterPuller()
 {
-
+    m_continueProcessing = false;
+    m_endProcessingSemaphore.acquire();
+    //m_deviceInfoList.clear();
 }
 
 void ModbusRegisterPuller::clearTaskList()
@@ -46,7 +49,7 @@ void ModbusRegisterPuller::run(void)
 {
     int currentScanningID = 1;
     QString vendor, product, version;
-    while (true)
+    while (m_continueProcessing)
     {
         if (m_isStoped)
             QThread::yieldCurrentThread();
@@ -54,18 +57,26 @@ void ModbusRegisterPuller::run(void)
         DeviceInfoMap::iterator ci = m_deviceInfoList.find(currentScanningID);
         if (m_modbus->readDeviceInfo(currentScanningID, vendor, product, version))
         {
-            if (! (ci != m_deviceInfoList.end() && (vendor == ci->second.m_vendor || product == ci->second.m_product || ci->second.m_version == version)))
+            if (! (ci != m_deviceInfoList.end() && (vendor == ci->second->m_vendor || product == ci->second->m_product || ci->second->m_version == version)))
             {
-                DeviceInfo a_info(vendor, product, version);
-                m_deviceInfoList[currentScanningID] = a_info;
+                DeviceInfoShared a_info = std::make_shared<DeviceInfo>(vendor, product, version);
+                {
+                    QMutexLocker lock(&m_infoMapMutex);
+                    m_deviceInfoList[currentScanningID] = a_info;
+                }
                 emit deviceListUpdated();
             }
         }
         else
         {
-            if(ci != m_deviceInfoList.end())
-                m_deviceInfoList.erase(ci);
-            emit deviceListUpdated();
+            if (ci != m_deviceInfoList.end())
+            {
+                {
+                    QMutexLocker lock(&m_infoMapMutex);
+                    m_deviceInfoList.erase(currentScanningID);
+                }
+                emit deviceListUpdated();
+            }
         }
 
         if (++currentScanningID > 127)
@@ -76,13 +87,14 @@ void ModbusRegisterPuller::run(void)
             for (PullerTaskShared task : m_tasks)
             {
                 QVector<quint16> res;
-                if (m_modbus->readRegisterPool(task->getID(), task->getRange().first, task->getRange().second - task->getRange().first, res))
+                if (m_modbus->readRegisterPool(task->getID(), task->getRange().first, task->getRange().second - task->getRange().first + 1, res))
                 {
                     task->setContent(res);
                 }
             }
         }
     }
+    m_endProcessingSemaphore.release();
 }
 
 void ModbusRegisterPuller::startPulling(ModBusUART_ImplShared modbus)

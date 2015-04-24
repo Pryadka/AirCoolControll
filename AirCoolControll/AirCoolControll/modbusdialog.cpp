@@ -104,3 +104,8 @@ void ModBusDialog::setExternalPorts(const QList<QString>& list)
 {
     ui.parameters->setExternalPorts(list);
 }
+
+void ModBusDialog::setDeviceList(const DeviceInfoMap& map)
+{
+    ui.log->setDeviceList(map);
+}

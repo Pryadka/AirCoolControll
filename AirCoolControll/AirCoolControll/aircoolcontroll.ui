@@ -16,14 +16,13 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="ModBusDialog" name="configWidget" native="true"/>
-      </item>
-      <item row="0" column="1">
-       <widget class="CoolerStateWidget" name="stateWidget" native="true"/>
-      </item>
-     </layout>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="ModBusDialog" name="configWidget" native="true"/>
+      <widget class="CoolerStateWidget" name="stateWidget" native="true"/>
+     </widget>
     </item>
    </layout>
   </widget>

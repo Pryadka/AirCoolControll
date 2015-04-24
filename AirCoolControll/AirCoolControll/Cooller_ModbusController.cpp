@@ -34,6 +34,7 @@ Cooller_ModBusController::Cooller_ModBusController(CoolerStateWidget *view, ModB
     connect(&m_connector, SIGNAL(connectionErrorOccured(QString)), config, SLOT(connectionErrorOccured(QString)));
     connect(&m_externalManager, SIGNAL(stateChanged()), this, SLOT(externalStateChanged()));
     connect(&m_externalManager, SIGNAL(listChanged()), this, SLOT(externalListChanged()));
+    connect(&m_modbus, SIGNAL(deviceListUpdated(void)), this, SLOT(deviceObserverWaked()));
 
     QString configsPath = Configurator::getConfigFilesPath();
     QDirIterator iter(configsPath, QStringList() << "*.xml", QDir::Files | QDir::NoDotAndDotDot, QDirIterator::NoIteratorFlags);
@@ -141,13 +142,15 @@ void Cooller_ModBusController::newDevice(int n)
     m_currentDeviceID = n;
     if (m_modbus.readyToWork())
     {
+        if (m_explorer)
+            m_explorer->stopTasks();
         m_explorer = std::make_shared<CoollerExplorer>(m_configs, m_modbus, m_currentDeviceID, this);
         if (m_explorer->getState() == CoollerExplorer::Ready)
         {
             m_inParameters = m_explorer->getCurrentConfig()->getInputParametersList();
             m_outParameters = m_explorer->getCurrentConfig()->getOutputParametersList();
-            m_view->setInputParameterList(m_inParameters);
-            m_view->setOutputParameterList(m_outParameters);
+            m_view->setParameterList(m_inParameters,true);
+            m_view->setParameterList(m_outParameters,false);
         }
     }
 }
@@ -209,6 +212,10 @@ bool Cooller_ModBusController::readXMLConfig(const QString& path)
                 a_parameter.m_isBool = true;
                 a_parameter.m_bitNumber = b;
             }
+            else
+            {
+                a_parameter.m_isBool = false;
+            }
             a_map->addVariable(name, a_parameter);
         }
 
@@ -248,7 +255,7 @@ void Cooller_ModBusController::updateStateWidget()
         int value;
         if (m_explorer->getRegisterValue(m_inParameters[i].first, value))
         {
-            m_view->updateInputParameter(i, value);
+            m_view->updateParameter(i, value,true);
         }
     }
 
@@ -257,7 +264,14 @@ void Cooller_ModBusController::updateStateWidget()
         int value;
         if (m_explorer->getRegisterValue(m_outParameters[i].first, value))
         {
-            m_view->updateOutputParameter(i, value);
+            m_view->updateParameter(i, value,false);
         }
     }
+}
+
+void Cooller_ModBusController::deviceObserverWaked()
+{
+    DeviceInfoMap map;
+    m_modbus.getDeviceList(map);
+    m_configDialog->setDeviceList(map);
 }

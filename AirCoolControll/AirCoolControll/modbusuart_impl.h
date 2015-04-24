@@ -7,6 +7,7 @@
 #include <qmutex.h>
 #include <memory>
 #include "VersionStorage.h"
+#include <unordered_map>
 
 
 struct DeviceInfo
@@ -18,7 +19,9 @@ struct DeviceInfo
     VersionStorage m_version;
 };
 
-typedef std::map<int, DeviceInfo> DeviceInfoMap;
+typedef std::shared_ptr<DeviceInfo> DeviceInfoShared;
+
+typedef std::unordered_map<int, DeviceInfoShared> DeviceInfoMap;
 
 class ModBusUART_Impl : public QObject
 {
@@ -30,13 +33,16 @@ public:
 
     void   setTimeOut(int t);
     void   setSpeed(int speed);
-    bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QVector<quint16>);
+    bool   readRegisterPool(quint16 id, quint16 regNumber,quint16 regCount,QVector<quint16>& list);
     bool   writeRegister(quint16 id, quint16 regNumber, quint16 value);
     bool   readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version);
     bool   isOpen(){ return m_isOpen; }
 
 private slots:
     void communicationError(QSerialPort::SerialPortError);
+
+signals:
+    void fatalError(void);
 
 private:
     ModBusUART_Impl(ModBusUART_Impl&);

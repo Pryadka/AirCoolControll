@@ -32,6 +32,7 @@ private slots:
     void sendConfiguration(void);
     void externalStateChanged(void);
     void externalListChanged(void);
+    void deviceObserverWaked();
 
 signals:
     void newStatus(const QString&);

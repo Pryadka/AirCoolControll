@@ -6,11 +6,12 @@ ModbusDriver::ModbusDriver(QObject *parent)
     m_mutex(new QMutex()),
     m_puller(this)
 {
-    connect(&m_puller, SIGNAL(deviceListUpdated()), this, SIGNAL(deviceListUpdated()));
+    connect(&m_puller, SIGNAL(deviceListUpdated()), this, SIGNAL(deviceListUpdated()));   
 }
 
 ModbusDriver::~ModbusDriver()
 {
+   // m_puller.terminate();
     delete m_mutex;
 }
 
@@ -22,7 +23,13 @@ bool ModbusDriver::setPortName(const QString& name)
     m_puller.terminate();
     m_puller.clearTaskList();
     
+    if (m_modbus)
+    {
+        disconnect(m_modbus.get(), SIGNAL(fatalError()), this, SLOT(UARTfail()));
+    }
     m_modbus = std::make_shared<ModBusUART_Impl>(name,this);
+    connect(m_modbus.get(), SIGNAL(fatalError()), this, SLOT(UARTfail()));
+
     if (m_modbus->isOpen())
     {
         m_currentPortName = name;
@@ -31,6 +38,11 @@ bool ModbusDriver::setPortName(const QString& name)
         return true;
     }
     return false;
+}
+
+void ModbusDriver::UARTfail()
+{
+    m_puller.terminate();
 }
 
 void ModbusDriver::addPullerTask(PullerTaskShared a_task)

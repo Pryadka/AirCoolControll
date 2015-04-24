@@ -3,6 +3,7 @@
 #include <boost/algorithm/string.hpp>
 #include <string>
 #include <vector>
+#include <qtextstream.h>
 
 VersionStorage::VersionStorage(QString versionString)
 {
@@ -52,4 +53,15 @@ bool VersionStorage::operator<=(const VersionStorage& other) const
 bool VersionStorage::operator==(const VersionStorage& other) const
 {
     return m_major == other.m_major && m_minor == other.m_minor && m_revision == other.m_revision;
+}
+
+VersionStorage::operator QString() const
+{
+    QString rc;
+    if (m_isLegal)
+    {
+        QTextStream ss(&rc);
+        ss << 'V' << m_major << '.' << m_minor << '.' << m_revision;
+    }
+    return rc;
 }

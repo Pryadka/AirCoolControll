@@ -161,9 +161,6 @@
     <ClCompile Include="externalcontrollmanager.cpp">
       <Filter>Source Files\ExternalConnection</Filter>
     </ClCompile>
-    <ClCompile Include="connectionlog.cpp">
-      <Filter>Source Files\ExternalConnection</Filter>
-    </ClCompile>
     <ClCompile Include="RequestRouter.cpp">
       <Filter>Source Files\ExternalConnection</Filter>
     </ClCompile>
@@ -190,6 +187,18 @@
     </ClCompile>
     <ClCompile Include="ModbusRegisterPuller.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_coollergraphwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_coollergraphwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="coollergraphwidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="connectionlog.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -244,14 +253,20 @@
     <CustomBuild Include="externalcontrollmanager.h">
       <Filter>Header Files\ExternalConnection</Filter>
     </CustomBuild>
-    <CustomBuild Include="connectionlog.h">
-      <Filter>Header Files\ExternalConnection</Filter>
-    </CustomBuild>
     <CustomBuild Include="ModbusDriver.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="ModbusRegisterPuller.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="coollergraphwidget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="coollergraphwidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="connectionlog.h">
+      <Filter>Header Files\Widgets</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -288,5 +303,11 @@
     <ClInclude Include="VersionStorage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_coollergraphwidget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\configs\TEKO_COOLER_0_0_1.xml" />
   </ItemGroup>
 </Project>

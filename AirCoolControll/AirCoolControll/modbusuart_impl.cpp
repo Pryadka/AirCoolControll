@@ -5,7 +5,7 @@
 
 ModBusUART_Impl::ModBusUART_Impl(const QString& name, QObject *parent)
     : QObject(parent),
-    m_timeOut(500) // default value
+    m_timeOut(100) // default value
 {
     connect(&m_port, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(communicationError(QSerialPort::SerialPortError)));
 
@@ -41,7 +41,7 @@ void ModBusUART_Impl::setSpeed(int speed)
     m_port.setBaudRate(speed);
 }
 
-bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QVector<quint16> o_list)
+bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 regCount,QVector<quint16>& o_list)
 {
     if (!m_port.isOpen())
         return false;
@@ -205,7 +205,11 @@ void ModBusUART_Impl::communicationError(QSerialPort::SerialPortError err)
     switch (err)
     {
     case QSerialPort::DeviceNotFoundError:
-        //m_config->setError(QString("Nothing Connected"));
+    case QSerialPort::PermissionError:
+    case QSerialPort::NotOpenError:
+        m_isOpen = false;
+        m_port.close();
+        emit fatalError();
         break;
     }
 }

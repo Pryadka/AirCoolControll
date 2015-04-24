@@ -51,6 +51,11 @@ CoollerExplorer::CoollerExplorer(const ConfigList& configs, ModbusDriver& modbus
 
 CoollerExplorer::~CoollerExplorer()
 {
+    
+}
+
+void CoollerExplorer::stopTasks()
+{
     m_modbus.removeTaskWithID(m_currentDeviceID);
 }
 

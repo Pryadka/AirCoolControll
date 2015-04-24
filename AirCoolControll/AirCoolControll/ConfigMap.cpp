@@ -57,8 +57,11 @@ unsigned int  ConfigMap::getValue(const std::string& name, const QVector<quint16
 
     if (p.m_isBool)
     {
-        ret =  ret && (1 << p.m_bitNumber) ? 1 : 0;
+        ret =  ret & (1 << p.m_bitNumber) ? 1 : 0;
     }
+
+    if (!p.m_decodeMethod.empty())
+        ret = decodeWithMethod(ret, p.m_decodeMethod);
 
     return ret;
 }
@@ -101,4 +104,17 @@ ConfigMap::ParameterList ConfigMap::getInputParametersList(bool isForRead) const
 ConfigMap::ParameterList ConfigMap::getOutputParametersList() const
 {
     return getInputParametersList(false);
+}
+
+qint16 ConfigMap::decodeWithMethod(qint16 value, const std::string& method)
+{
+    qint16 ret = value;
+    if (method == "AT")
+    {
+        ret = (value & 0x007f);
+        if (value & 0x0080)
+            ret = -ret;
+    }
+
+    return ret;
 }
