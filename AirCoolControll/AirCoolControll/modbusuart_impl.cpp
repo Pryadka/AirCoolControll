@@ -76,10 +76,10 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
             return false;
 
         o_list.clear();
-        const uchar* d = (const uchar *)responseData.data() + 2;
+        const uchar* d = (const uchar *)responseData.data() + 3;
         for (int i = 0; i < regCount; i++)
         {
-            quint16 v = qFromLittleEndian<quint16>(d + i * 2);
+            quint16 v = qFromBigEndian<quint16>(d + i * 2);
             o_list.push_back(v);
         }
     }
@@ -204,6 +204,17 @@ void ModBusUART_Impl::communicationError(QSerialPort::SerialPortError err)
     QString errDescription = m_port.errorString();
     switch (err)
     {
+    case QSerialPort::UnknownError :
+        m_port.close();
+        if (m_port.open(QIODevice::ReadWrite))
+        {
+            m_isOpen = true;
+        }
+        else
+        {
+            m_isOpen = false;
+        }
+        break;
     case QSerialPort::DeviceNotFoundError:
     case QSerialPort::PermissionError:
     case QSerialPort::NotOpenError:

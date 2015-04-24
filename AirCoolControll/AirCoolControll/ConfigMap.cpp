@@ -57,7 +57,7 @@ unsigned int  ConfigMap::getValue(const std::string& name, const QVector<quint16
 
     if (p.m_isBool)
     {
-        ret =  ret & (1 << p.m_bitNumber) ? 1 : 0;
+        ret =  (ret & (1 << p.m_bitNumber)) ? 1 : 0;
     }
 
     if (!p.m_decodeMethod.empty())

@@ -104,8 +104,8 @@
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5Widgetsd.lib;Qt5SerialPortd.lib;Qt5Networkd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir $(OutputPath)configs
-xcopy $(SolutionDir)..\configs  $(OutputPath)\configs /y</Command>
+      <Command>mkdir "$(OutputPath)configs"
+xcopy "$(SolutionDir)..\configs"  "$(OutputPath)\configs" /y</Command>
     </PostBuildEvent>
     <PostBuildEvent>
       <Message>Copping configs file</Message>
@@ -143,8 +143,8 @@ xcopy $(SolutionDir)..\configs  $(OutputPath)\configs /y</Command>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;Qt5SerialPort.lib;Qt5Network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mkdir $(OutputPath)configs
-xcopy $(SolutionDir)..\configs  $(OutputPath)\configs /y</Command>
+      <Command>mkdir "$(OutputPath)configs"
+xcopy "$(SolutionDir)..\configs"  "$(OutputPath)\configs" /y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -738,7 +738,7 @@ xcopy $(SolutionDir)..\configs  $(OutputPath)\configs /y</Command>
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.4.1" Qt5Version_x0020_x64="msvc2013_64" MocOptions="" />
+      <UserProperties MocDir=".\GeneratedFiles\$(ConfigurationName)" UicDir=".\GeneratedFiles" RccDir=".\GeneratedFiles" lupdateOptions="" lupdateOnBuild="0" lreleaseOptions="" Qt5Version_x0020_Win32="5.4.1" Qt5Version_x0020_x64="5.4.1" MocOptions="" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
