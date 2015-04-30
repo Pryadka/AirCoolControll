@@ -5,7 +5,7 @@
 
 ModBusUART_Impl::ModBusUART_Impl(const QString& name, QObject *parent)
     : QObject(parent),
-    m_timeOut(100) // default value
+    m_timeOut(400) // default value
 {
     connect(&m_port, SIGNAL(error(QSerialPort::SerialPortError)), this, SLOT(communicationError(QSerialPort::SerialPortError)));
 
@@ -66,7 +66,7 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
     if ( m_port.waitForReadyRead(m_timeOut))
     {
         QByteArray responseData = m_port.readAll();
-        while (m_port.waitForReadyRead(20))
+        while (m_port.waitForReadyRead(50))
             responseData += m_port.readAll();
 
         if ( ! checkCRC(responseData))
@@ -93,6 +93,9 @@ bool ModBusUART_Impl::readRegisterPool(quint16 id, quint16 regNumber, quint16 re
 
 bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value)
 {
+    if (!m_port.isOpen())
+        return false;
+
     quint16 regNumberBig = qToBigEndian<quint16>(regNumber);
     quint16 valueBig = qToBigEndian<quint16>(value);
     QByteArray data = QByteArray::fromRawData((const char*)& regNumberBig, sizeof(quint16));
@@ -112,7 +115,7 @@ bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value
     if (m_port.waitForReadyRead(m_timeOut))
     {
         QByteArray responseData = m_port.readAll();
-        while (m_port.waitForReadyRead(20))
+        while (m_port.waitForReadyRead(50))
             responseData += m_port.readAll();
 
         if ( ! checkCRC(responseData))
@@ -129,6 +132,9 @@ bool ModBusUART_Impl::writeRegister(quint16 id, quint16 regNumber, quint16 value
 
 bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& product, QString& version)
 {
+    if (!m_port.isOpen())
+        return false;
+
     const char reqBody[] = { char(0x0E), char(1), char(0) };
     QByteArray reqBodyArray(reqBody);
     reqBodyArray.append(char(0));
@@ -136,53 +142,62 @@ bool ModBusUART_Impl::readDeviceInfo(quint16 id, QString& vendor, QString& produ
 
     QMutexLocker locker(&m_mutex);
 
-    m_port.write(req);
-
-    if (!m_port.waitForBytesWritten(m_timeOut))
+    for (int retryCount = 10; retryCount; retryCount--)
     {
-        return false;
-    }
+        m_port.write(req);
 
-    if (m_port.waitForReadyRead(m_timeOut))
-    {
-        QByteArray responseData = m_port.readAll();
-        while (m_port.waitForReadyRead(20))
-            responseData += m_port.readAll();
-
-        if ( ! checkCRC(responseData))
-            return false;
-        if (responseData[1] != char(43) || responseData[0] != char(id) || responseData[2] != char(0x0e) || responseData[3] != char(1))
-            return false;
-        try
+        if (!m_port.waitForBytesWritten(m_timeOut))
         {
-            int numberOfObjects = responseData[7];
-            if (numberOfObjects < 3)
-                return false;
-            for (int i = 0, startIndex = 8; i < numberOfObjects; i++)
-            {
-                if (i != responseData[startIndex])
-                    return false;
-                int len = responseData[startIndex + 1];
-                std::string a_string(responseData.data() + startIndex + 2,len);
-                switch (i)
-                {
-                case 0:
-                    vendor = QString::fromStdString(a_string);
-                    break;
-                case 1:
-                    product = QString::fromStdString(a_string);
-                    break;
-                case 2:
-                    version = QString::fromStdString(a_string);
-                    break;
-                }
-                startIndex += len + 2;
-            } 
-            return true;
+            return false;
         }
-        catch (...)
+
+        if (m_port.waitForReadyRead(m_timeOut))
         {
-           
+            QByteArray responseData = m_port.readAll();
+            while (m_port.waitForReadyRead(50))
+                responseData += m_port.readAll();
+
+            if (!checkCRC(responseData))
+            {
+                m_port.clear();
+                continue;
+            }
+
+            if (responseData[1] != char(43) || responseData[0] != char(id) || responseData[2] != char(0x0e) || responseData[3] != char(1))
+                return false;
+            try
+            {
+                int numberOfObjects = responseData[7];
+                if (numberOfObjects < 3)
+                    return false;
+                for (int i = 0, startIndex = 8; i < numberOfObjects; i++)
+                {
+                    if (i != responseData[startIndex])
+                        return false;
+                    int len = responseData[startIndex + 1];
+                    std::string a_string(responseData.data() + startIndex + 2, len);
+                    QString* target;
+                    switch (i)
+                    {
+                    case 0:
+                        target = &vendor;
+                        break;
+                    case 1:
+                        target = &product;
+                        break;
+                    case 2:
+                        target = &version;
+                        break;
+                    }
+                    (*target) = QString::fromStdString(a_string);
+                    startIndex += len + 2;
+                }
+                return true;
+            }
+            catch (...)
+            {
+
+            }
         }
     }
     return false;
@@ -205,7 +220,7 @@ void ModBusUART_Impl::communicationError(QSerialPort::SerialPortError err)
     switch (err)
     {
     case QSerialPort::UnknownError :
-        m_port.close();
+        /*m_port.close();
         if (m_port.open(QIODevice::ReadWrite))
         {
             m_isOpen = true;
@@ -213,13 +228,16 @@ void ModBusUART_Impl::communicationError(QSerialPort::SerialPortError err)
         else
         {
             m_isOpen = false;
-        }
+        }*/
         break;
     case QSerialPort::DeviceNotFoundError:
     case QSerialPort::PermissionError:
     case QSerialPort::NotOpenError:
         m_isOpen = false;
-        m_port.close();
+        if (m_port.isOpen())
+        {
+            m_port.close();
+        }
         emit fatalError();
         break;
     }

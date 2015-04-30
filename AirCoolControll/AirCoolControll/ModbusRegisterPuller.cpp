@@ -71,6 +71,7 @@ void ModbusRegisterPuller::run(void)
         {
             if (ci != m_deviceInfoList.end())
             {
+                //if (!m_modbus->readDeviceInfo(currentScanningID, vendor, product, version))
                 {
                     QMutexLocker lock(&m_infoMapMutex);
                     m_deviceInfoList.erase(currentScanningID);
@@ -79,7 +80,7 @@ void ModbusRegisterPuller::run(void)
             }
         }
 
-        if (++currentScanningID > 127)
+        if (++currentScanningID > 10)
             currentScanningID = 1;
 
         {
